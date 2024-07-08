@@ -1,15 +1,24 @@
 #!/usr/bin/python3
 """
-Function that calculates the min operations to copy and paste letters
+Minimum Operations
+Given num n, write a method that calculates the fewest number of operations
+needed to result in exactly n H characters in a file
+Prototype: def minOperations(n)
+Returns an integer
+if n is impossible to achieve, return 0
 """
 
 
 def minOperations(n):
-    nOpe = 0
-    minOpe = 2
+    """
+    Function minOperations
+    Returns an integer
+    """
+    result = 0
+    x = 2
     while n > 1:
-        while n % minOpe == 0:
-            nOpe += minOpe
-            n /= minOpe
-        minOpe += 1
-    return nOpe
+        while n % x == 0:
+            result += x
+            n /= x
+        x += 1
+    return result

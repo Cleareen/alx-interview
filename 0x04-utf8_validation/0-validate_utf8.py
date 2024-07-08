@@ -1,61 +1,38 @@
 #!/usr/bin/python3
-"""UTF-8 validation module.
+"""
+Method to determine if given data represents valid UTF-8 encoding
+Prototype: def validUTF8(data)
+Returns True if data is valid UTF-8 encoding, else return False
+Dataset can contain multiple characters
+Data will represent a list of integers
 """
 
 
 def validUTF8(data):
-    """Checks if a list of integers are valid UTF-8 codepoints.
-    See <https://datatracker.ietf.org/doc/html/rfc3629#page-4>
     """
-    skip = 0
-    n = len(data)
-    for i in range(n):
-        if skip > 0:
-            skip -= 1
-            continue
-        if type(data[i]) != int or data[i] < 0 or data[i] > 0x10ffff:
-            return False
-        elif data[i] <= 0x7f:
-            skip = 0
-        elif data[i] & 0b11111000 == 0b11110000:
-            # 4-byte utf-8 character encoding
-            span = 4
-            if n - i >= span:
-                next_body = list(map(
-                    lambda x: x & 0b11000000 == 0b10000000,
-                    data[i + 1: i + span],
-                ))
-                if not all(next_body):
-                    return False
-                skip = span - 1
-            else:
-                return False
-        elif data[i] & 0b11110000 == 0b11100000:
-            # 3-byte utf-8 character encoding
-            span = 3
-            if n - i >= span:
-                next_body = list(map(
-                    lambda x: x & 0b11000000 == 0b10000000,
-                    data[i + 1: i + span],
-                ))
-                if not all(next_body):
-                    return False
-                skip = span - 1
-            else:
-                return False
-        elif data[i] & 0b11100000 == 0b11000000:
-            # 2-byte utf-8 character encoding
-            span = 2
-            if n - i >= span:
-                next_body = list(map(
-                    lambda x: x & 0b11000000 == 0b10000000,
-                    data[i + 1: i + span],
-                ))
-                if not all(next_body):
-                    return False
-                skip = span - 1
-            else:
+    Prototype: def validUTF8(data)
+    Returns True if data is valid UTF-8 encoding
+    else return False
+    """
+    count = 0
+
+    for bit in data:
+        binary = bin(bit).replace('0b', '').rjust(8, '0')[-8:]
+        if count == 0:
+            if binary.startswith('110'):
+                count = 1
+            if binary.startswith('1110'):
+                count = 2
+            if binary.startswith('11110'):
+                count = 3
+            if binary.startswith('10'):
                 return False
         else:
-            return False
+            if not binary.startswith('10'):
+                return False
+            count -= 1
+
+    if count != 0:
+        return False
+
     return True
