@@ -14,5 +14,3 @@ Curriculum <br>
 * Code is documented
 * Code uses `PEP 8` style (version 1.7.x)
 * Files executable
-
-### General Learning
